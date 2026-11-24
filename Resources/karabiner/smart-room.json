@@ -2,7 +2,7 @@
   "title": "Smart Room lights",
   "rules": [
     {
-      "description": "[SmartRoom] F13-F19 = свет: F13 вкл/выкл, F14/F15 темнее/ярче, F16/F17 пред./след. пресет, F18 Day, F19 Dream; Clear = цифровой блок: цифры <-> свет",
+      "description": "[SmartRoom] F13-F19 = lights: F13 on/off, F14/F15 dimmer/brighter, F16/F17 previous/next mood, F18 Day, F19 Dream; Clear = number pad: digits <-> lights",
       "manipulators": [
         {
           "type": "basic",

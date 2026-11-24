@@ -17,4 +17,4 @@ for size in 16 32 128 256 512; do
     sips -z $double $double "$WORK/icon_1024.png" --out "$SET/icon_${size}x${size}@2x.png" >/dev/null
 done
 iconutil -c icns "$SET" -o ../AppIcon.icns
-echo "Готово: Resources/AppIcon.icns"
+echo "Done: Resources/AppIcon.icns"

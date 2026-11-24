@@ -41,7 +41,7 @@ One Swift package, one executable target, about 4,500 lines, no dependencies out
 
 ## Quickstart
 
-Needs macOS 26 or later and a Swift toolchain. The Xcode Command Line Tools are enough; Xcode itself is not required.
+Built for macOS 26 or later (the package's minimum target) and tested on 27.2. Needs a Swift toolchain. The Xcode Command Line Tools are enough; Xcode itself is not required.
 
 ```sh
 git clone https://github.com/Vladimir-Pirotskiy/smart-room.git
