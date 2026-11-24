@@ -1,12 +1,32 @@
-# smart-room
+<p align="center">
+  <img src="docs/icon.png" width="112" height="112" alt="Smart Room icon: a warm light bulb on a violet tile">
+</p>
 
-A macOS app that runs the lights of one room over the local network: WiZ bulbs and Yeelight strips, with presets, two-light colour scenes, keyboard control, and a Spotify scene that takes its colours from the album cover and moves with the beat.
+<h1 align="center">Smart Room</h1>
+
+<p align="center">
+  A macOS app that runs the lights of one room over the local network.<br>
+  WiZ bulbs and Yeelight strips, presets, two-light colour scenes, keyboard control,<br>
+  and a Spotify scene that takes its colours from the album cover and moves with the beat.
+</p>
+
+<p align="center">
+  <a href="#what-it-does">What it does</a> ·
+  <a href="#quickstart">Quickstart</a> ·
+  <a href="#keyboard">Keyboard</a> ·
+  <a href="#how-it-works">How it works</a> ·
+  <a href="#limitations">Limitations</a>
+</p>
+
+<p align="center">
+  <img src="docs/hero.png" width="920" alt="Three captures of the Smart Room window, each tinted by the lights: warm white for the Day preset, teal for the Spotify scene with its beat settings open, violet for the Deep Violet scene">
+</p>
+
+<p align="center"><sub>The window takes the colour the lights are showing. Left to right: the Day preset, the Spotify scene with its beat settings, the Deep Violet scene.</sub></p>
 
 The vendor apps each control one brand, live on the phone, and go through the cloud. This app sits in the menu bar of the Mac you are already working on, talks to the lamps directly (UDP for WiZ, TCP for Yeelight), and treats the room as one thing: one key press changes every light, and a scene gives each light its own part instead of the same colour twice.
 
 No account, no cloud, no API key. Nothing leaves the local network except the download of the album cover from the address Spotify itself reports.
-
-![The main window: presets, scenes for all lights, and the settings of the beat show](docs/screenshot.png)
 
 ## What it does
 
@@ -18,6 +38,12 @@ No account, no cloud, no API key. Nothing leaves the local network except the do
 - **Menu bar.** Left click opens a compact panel, right click a menu with the presets and scenes.
 - **On at sunset, off at sunrise.** Worked out on the Mac from its time zone; no location permission and no network.
 - **Spotify scene.** The lights take four colours from the cover of the track playing in the Spotify desktop app, and, if you allow it, move with the beat of the music the Mac is playing.
+
+<p align="center">
+  <img src="docs/controls.png" width="720" alt="The menu bar panel with brightness, presets and scenes; the card of one light with brightness, white, colour, flows, softness and speed; the Keyboard Shortcuts sheet with its F13 to F19 and number-pad columns">
+</p>
+
+<p align="center"><sub>The menu bar panel, the card of one light, and the keyboard sheet.</sub></p>
 
 ## What is in the repo
 
@@ -84,13 +110,25 @@ Global shortcuts, while the app is running:
 | ⌃⌥⌘ 7, 8, 9 | Duet, Bloom, Ruby |
 | ⌃⌥⌘ 0, or the Clear key | Number-pad mode: the pad controls the lights instead of typing digits |
 
+In number-pad mode `0` switches the lights, `−` and `+` dim and brighten, `/` and `*` step through the moods, and `1` … `9` pick Day … Ruby.
+
 A shortcut another app already owns is marked "shortcut taken by another app" in the app's menu.
 
 For a keyboard with F13–F19, `Resources/karabiner/smart-room.json` is a Karabiner-Elements rule that maps those keys to the shortcuts above and makes the Clear key a dependable toggle for the number-pad mode. Copy it to `~/.config/karabiner/assets/complex_modifications/` and enable it in Karabiner-Elements → Complex Modifications.
 
 ## How it works
 
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/signal-path-dark.png">
+  <img src="docs/signal-path-light.png" width="100%" alt="Signal path. On the Mac, four inputs feed the app: the Spotify desktop app, the sound output, the keyboard and the clock. The app sends steps to the WiZ bulb on UDP 38899 four times a second and a target to the Yeelight strip on TCP 55443 every two seconds, all inside the local network. The only request that leaves it is the cover picture.">
+</picture>
+
 **Flows.** A flow is a list of hues and a time per hue. Each running flow has one clock; each light has a place on it. A WiZ lamp is stepped four times a second with unacknowledged `setPilot` datagrams. A Yeelight lamp accepts too few commands for that, so it gets a target every two seconds and does the gliding itself (`set_rgb … smooth 2000`). Colours are blended the short way round the hue wheel, so a move from violet to red goes through pink and not through grey.
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/scenes-dark.png">
+  <img src="docs/scenes-light.png" width="100%" alt="The eleven scenes written for two lights. For each scene two colour bars show one loop, the first light above the second: Duet 80 s, Bloom 60 s, Ruby 54 s, Deep Red 56 s, Deep Violet 56 s, Twilight 72 s at 25% brightness, Horizon 66 s, Lagoon 48 s, Ember 42 s, Polar 60 s, Sorbet 44 s.">
+</picture>
 
 **Spotify scene.** While a lit lamp is in the scene, the app asks the Spotify desktop app every two seconds for the player state and the cover address, and also listens for Spotify's playback notification. The cover is reduced to exactly four saturated hues that are at least 40° apart; a cover with no colour in it gives a warm amber palette. A new palette fades in over three seconds. Paused music stops the flow clock.
 
@@ -100,6 +138,11 @@ For a keyboard with F13–F19, `Resources/karabiner/smart-room.json` is a Karabi
 - *Pulse*: autocorrelation of the last eight seconds of onsets, between 60 and 220 beats a minute, refined on four beats at once, held with hysteresis in both tempo and place in the bar so that syncopated music does not make the grid jump.
 - *Timing*: each beat is announced 100 ms early, and the lights are delayed by the output device's own latency (the Bluetooth output it was tested with reports 160 ms), so that the light arrives with the sound and not with the samples. A slider covers what cannot be measured.
 - *The show*: the bulb is the drum, swelling on every beat and falling back, its colour moving on. The strip keeps the bars: every bar or two it glides to a colour from the other side of the cover. Quiet passages make both smaller. Three styles, Soft, Medium and Strong, set the depth and speed.
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/beat-timing-dark.png">
+  <img src="docs/beat-timing-light.png" width="100%" alt="Timing of one beat with the tested Bluetooth output. The app calls the beat 100 ms before it is in the samples, holds the command for the 160 ms the output reports, so it leaves the Mac at +60 ms. The sound reaches the ears at +160 ms, and the lamp is meant to show the beat at the same moment; how long the lamp takes was not measured.">
+</picture>
 
 The brightness the user chose is kept on disk while the show runs, and restored on quit and on the next launch, so a swell is never mistaken for a setting.
 
